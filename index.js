@@ -51,6 +51,19 @@ server.get('/api/posts/:id/comments', async (req, res) =>{
 })
 
 
+server.get('/api/post/:id', async(req, res) => {
+    const {id} = req.params
+    try{
+        if(id !== 0){
+            const post = await Hub.findById(id)
+            res.status(200).json(post)
+        }else{
+            res.status(404).json({ message: "The post with the specified ID does not exist." })
+        }
+    }catch(error){
+        res.status(500).json({ error: "The post information could not be retrieved." })}
+})
+
 
 
 
