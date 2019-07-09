@@ -64,6 +64,21 @@ server.get('/api/post/:id', async(req, res) => {
         res.status(500).json({ error: "The post information could not be retrieved." })}
 })
 
+server.delete('/api/post/:id'), async(req, res)=> {
+    const {id} = req.params
+    try{
+        if(id !== 0){
+            const post = await Hub.findById(id)
+            res.status(200).json(post)
+            Hub.remove(post)
+        }else{
+            res.status(404).json({ message: "The post with the specified ID does not exist." })
+        }
+    }catch(error){
+        res.status(500).json({ error: "The post could not be removed" })}
+}
+
+
 
 
 
