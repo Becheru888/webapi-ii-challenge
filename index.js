@@ -7,13 +7,15 @@ const Hub = require('./data/db')
 server.use(express.json())
 
 
-server.get('/api/posts', async (req, res) => {
+server.post('/api/posts', async (req, res) => {
     try {
-        const hub = await Hub.find(req.body);
-        res.status(200).json(hub)
+        const newUser = req.body
+        if(!req.body.title || !req.body.contents){
+            res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
+        }else{res.status(201).json(newUser)}
     } catch(error){
-        console.log(error);
-        res.status(500).json({message: 'Error getting the Hub'})
+        
+        res.status(500).json({ error: "There was an error while saving the post to the database" })
     }
 })
 
@@ -26,6 +28,6 @@ server.get('/api/posts', async (req, res) => {
 
 
 
-server.listen(4000, () => {
-    console.log('Server running at port 4000')
+server.listen(3000, () => {
+    console.log('Server running at port 3000')
 })
