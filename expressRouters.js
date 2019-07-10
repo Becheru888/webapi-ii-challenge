@@ -72,3 +72,5 @@ router.delete('/api/posts/:id'), async(req, res)=> {
     }catch(error){
         res.status(500).json({ error: "The post could not be removed" })}
 }
+
+module.exports = router;
