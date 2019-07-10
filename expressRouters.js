@@ -98,6 +98,32 @@ router.get('/api/posts/:id', async(req, res) => {
         res.status(500).json({ error: "The post information could not be retrieved." })}
 })
 
+router.put("/api/posts/:id", async (req, res) => {
+    try {
+      const post = await Hub.findById(req.params.id);
+  
+      if (post[0].id) {
+        if (req.body.title && req.body.contents) {
+          const updatedPost = await Hub.update(req.params.id, req.body);
+          res.status(200).json({ updatedPost });
+        } else {
+          res.status(400).json({
+            message: "Please provide title and contents for the post."
+          });
+        }
+      } else {
+        res.status(404).json({
+          message: "The post with the specified ID does not exist."
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        error: "The post information could not be modified."
+      });
+    }
+  });
+  
+
 router.delete("/api/posts/:id", async (req, res) => {
     try {
       const post = await Hub.findById(req.params.id);
