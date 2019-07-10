@@ -27,6 +27,45 @@ router.post('/api/posts', async (req, res) => {
     }
 })
 
+router.post("/api/posts/:id/comments", async (req, res) => {
+    try {
+      const post = await Hub.findById(req.params.id);
+      if (post[0].id) {
+        const newComment = { ...req.body, post_id: req.params.id };
+        const comment = await Hub.insertComment(newComment);
+  
+        if (req.body.text) {
+          res.status(201).json(comment);
+        } else {
+          res.status(400).json({
+            message: "Please provide text for the comment."
+          });
+        }
+      } else {
+        res.status(404).json({
+          message: "The post with the specified ID does not exist."
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        error: "There was an error while saving the comment to the database."
+      });
+    }
+  });
+  
+  router.get("/api/posts", async (req, res) => {
+    try {
+      const posts = await Hub.find();
+      res.status(200).json(posts);
+    } catch (error) {
+      res.status(500).json({
+        error: "The posts information could not be retrieved."
+      });
+    }
+  });
+  
+
+
 router.get('/api/posts/:id/comments', async (req, res) =>{
     
     try{
@@ -61,11 +100,11 @@ router.get('/api/posts/:id', async(req, res) => {
 
 router.delete("/api/posts/:id", async (req, res) => {
     try {
-      const post = await Utils.findById(req.params.id);
+      const post = await Hub.findById(req.params.id);
   
-      if (post.id) {
-        await Utils.remove(req.params.id);
-        res.json(Hub);
+      if (post[0].id) {
+        await Hub.remove(req.params.id);
+        res.json(Hub.body);
       } else {
         res.status(404).json({
           message: "The post with the specified ID does not exist."
